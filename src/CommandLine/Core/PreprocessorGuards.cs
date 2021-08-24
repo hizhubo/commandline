@@ -21,20 +21,29 @@ namespace CommandLine.Core
 
         public static Func<IEnumerable<string>, IEnumerable<Error>> HelpCommand(StringComparer nameComparer)
         {
+
             return
                 arguments =>
-                    nameComparer.Equals("--help", arguments.First())
+                {
+                    var firstArg = arguments.First();
+                    var requestedHelp = nameComparer.Equals("--help", firstArg) || nameComparer.Equals("-h", firstArg);
+                    return requestedHelp
                         ? new Error[] { new HelpRequestedError() }
                         : Enumerable.Empty<Error>();
+                };
         }
 
         public static Func<IEnumerable<string>, IEnumerable<Error>> VersionCommand(StringComparer nameComparer)
         {
             return
                 arguments =>
-                    nameComparer.Equals("--version", arguments.First())
+                {
+                    var firstArg = arguments.First();
+                    var requestedVersion = nameComparer.Equals("--version", firstArg) || nameComparer.Equals("-v", firstArg);
+                    return requestedVersion
                         ? new Error[] { new VersionRequestedError() }
                         : Enumerable.Empty<Error>();
+                };
         }
     }
 }

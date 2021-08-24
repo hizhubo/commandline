@@ -78,6 +78,21 @@ namespace CommandLine.Tests.Unit.Core
             result.Should().BeEquivalentTo(expectedResult);
         }
 
+        [Fact]
+        public void Explicit_help_request_generates_help_requested_error_for_dash_h()
+        {
+            // Fixture setup
+            var expectedResult = new NotParsed<Simple_Options>(
+                TypeInfo.Create(typeof(Simple_Options)), new Error[] { new HelpRequestedError() });
+
+            // Exercize system 
+            var result = InvokeBuild<Simple_Options>(
+                new[] { "-h" });
+
+            // Verify outcome
+            result.Should().BeEquivalentTo(expectedResult);
+        }
+
         [Theory]
         [InlineData(new[] { "-123" }, -123L)]
         [InlineData(new[] { "-1" }, -1L)]
@@ -1175,7 +1190,7 @@ namespace CommandLine.Tests.Unit.Core
         public void Options_In_Group_With_Values_Does_Not_Generate_MissingGroupOptionError(params string[] args)
         {
             // Exercize system 
-            var result = InvokeBuild<Options_With_Group>(args);
+            var result = InvokeBuild<Options_With_Group>(args, autoVersion: false);
 
             // Verify outcome
             result.Should().BeOfType<Parsed<Options_With_Group>>();
